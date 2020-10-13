@@ -18,22 +18,29 @@ public class Downloader
     {
         this.model = model;
         var state = model.GetState();
-        state.clickConfirm += StartDownload;
+        state.clickConfirm += UnZip;
         model.SetState(state);
+    }
+
+    public void UnZip()
+    {
+        var state = model.GetState();
+        //state
+        PlaceUnZipFiles(state.filePath);
     }
 
     private async void StartDownload()
     {
         isFinished = false;
-        tip = "文件将下载到互动课堂资源目录";
+        tip = "文件将安装到互动课堂资源目录";
 
         var state = model.GetState();
-        fileName = Path.GetFileName(state.url);
+        fileName = Path.GetFileName(state.filePath);
         var savepath = Path.Combine(Application.persistentDataPath, fileName).Replace('\\', '/');
         state.progress = 0;
         model.SetState(state);
 
-        httpDownLoad = new HttpDownLoad(state.url, Application.persistentDataPath, 8000);
+        httpDownLoad = new HttpDownLoad(state.filePath, Application.persistentDataPath, 8000);
         httpDownLoad.DownLoad();
         Debug.Log($"httpDownLoad.TotalLength:{httpDownLoad.TotalLength}");
         await new WaitForSeconds(0.5f);
@@ -59,21 +66,20 @@ public class Downloader
         ZipHelper.UnZip(savepath, unzipPath, (s) =>
         {
             var st = model.GetState();
-            st.tip = $"正在解压:[{curIndex++}/{count}]{s}";
+            st.tip = $"正在安装:[{curIndex++}/{count}]{s}";
             st.progress = (float)curIndex * 100f / (float)count;
             model.SetState(st);
         },
         async () =>
         {
             var st = model.GetState();
-            st.tip = "解压完成, 软件即将关闭";
+            st.tip = "安装完成, 软件即将关闭";
             st.progress = 100f;
             model.SetState(st);
             // var endst = model.GetState();
             // endst.page = "complete";
             // model.SetState(endst);
-            await new WaitForSeconds(2f);
-            File.Delete(savepath);
+            await new WaitForSeconds(1f);
             Application.Quit();
         });
     }

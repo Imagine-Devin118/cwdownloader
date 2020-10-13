@@ -22,9 +22,9 @@ public class DisplayManager : MonoBehaviour
 
     private async void Start()
     {
-        IntPtr handle = (IntPtr)System.Diagnostics.Process.GetCurrentProcess().Id;  //获取进程ID
-        EnumWindows(new EnumWindowsCallBack(EnumWindCallback), handle);     //枚举查找本窗口
-        ChangeTitle("想象力课堂资源下载器");
+        IntPtr handle = (IntPtr)System.Diagnostics.Process.GetCurrentProcess().Id;
+        EnumWindows(new EnumWindowsCallBack(EnumWindCallback), handle);
+        ChangeTitle("想象力课堂资源离线包安装器");
         await MaximizesWindow();
     }
 

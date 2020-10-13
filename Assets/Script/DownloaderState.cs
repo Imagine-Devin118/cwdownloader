@@ -6,7 +6,7 @@ namespace ImagineClass.Library
 {
     public class DownloaderState
     {
-        public string url;
+        public string filePath;
         public string tip;
         public string page;
         public float progress;
