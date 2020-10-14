@@ -67,7 +67,7 @@ public class DownloaderUI : View<DownloaderState>
     {
         OpenFileDlg pth = new OpenFileDlg();
         pth.structSize = Marshal.SizeOf(pth);
-        pth.filter = "all files";// (*.zip)|*.zip
+        pth.filter = "all files (*.*)|*.*";
         pth.file = new string(new char[256]);
         pth.maxFile = pth.file.Length;
         pth.fileTitle = new string(new char[64]);
