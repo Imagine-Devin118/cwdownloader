@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using FairyGUI;
@@ -21,10 +22,7 @@ public class DownloaderUI : View<DownloaderState>
         components["confirm"].asButton.onClick.Set(() =>
         {
             var state = model.GetState();
-            var url = state.filePath;
-            state.filePath = url;
-            model.SetState(state);
-            if (File.Exists(url))
+            if (File.Exists(state.filePath))
             {
                 state.clickConfirm.Invoke();
                 state.page = "downloading";
@@ -41,7 +39,14 @@ public class DownloaderUI : View<DownloaderState>
             var s = model.GetState();
             var filePath = OpenFileDialog();
             s.filePath = filePath;
-            s.tip = $"选中的文件:{filePath}";
+            long fileSize = 0;
+            if (File.Exists(filePath))
+            {
+                var fileInfo = new FileInfo(filePath);
+                fileSize = fileInfo.Length;
+            }
+            var extInfo = fileSize > 0 ? HumanReadableFilesize(fileSize) : "";
+            s.tip = $"选中的文件:{filePath}[{extInfo}]";
             model.SetState(s);
         });
 
@@ -76,5 +81,21 @@ public class DownloaderUI : View<DownloaderState>
             return pth.file;
         }
         return "";
+    }
+
+    public string HumanReadableFilesize(long size)
+    {
+        var num = 1024.00;
+
+        if (size < num)
+            return size + "B";
+        if (size < Math.Pow(num, 2))
+            return (size / num).ToString("f2") + "KB";
+        if (size < Math.Pow(num, 3))
+            return (size / Math.Pow(num, 2)).ToString("f2") + "M";
+        if (size < Math.Pow(num, 4))
+            return (size / Math.Pow(num, 3)).ToString("f2") + "G";
+
+        return (size / Math.Pow(num, 4)).ToString("f2") + "T";
     }
 }

@@ -42,7 +42,6 @@ public class Downloader
 
         httpDownLoad = new HttpDownLoad(state.filePath, Application.persistentDataPath, 8000);
         httpDownLoad.DownLoad();
-        Debug.Log($"httpDownLoad.TotalLength:{httpDownLoad.TotalLength}");
         await new WaitForSeconds(0.5f);
         filesize = HumanReadableFilesize(httpDownLoad.TotalLength);
         httpDownLoad.OnComplete = () =>
@@ -55,7 +54,7 @@ public class Downloader
     private void PlaceUnZipFiles(string savepath)
     {
         var count = ZipHelper.FileInZipCount(savepath);
-        var unzipPath = Path.GetDirectoryName(savepath);
+        var unzipPath = Application.persistentDataPath;
         var curIndex = 0;
 
         var st1 = model.GetState();
